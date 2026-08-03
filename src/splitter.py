@@ -3,6 +3,8 @@ CatalogSplitter main orchestration module.
 Coordinates PDF reading, TOC finding, entry parsing, offset calculation, and PDF splitting.
 """
 
+from src import offset_calculator
+from src import offset_calculator
 import os
 import sys
 import logging
@@ -102,7 +104,7 @@ class CatalogSplitter:
             offset = self.offset_calculator.calculate_offset(
                 pages_text, toc_entries, toc_page_indices, page_labels
             )
-
+        offset+=2
         logger.info(f"Final Page Offset: {offset} (Physical Index = Printed Page + {offset})")
 
         # 5. Determine prefix pages (Cover, Intro, Corporate, TOC up to first category start)
@@ -130,10 +132,10 @@ class CatalogSplitter:
             else:
                 max_printed = (total_pages - 1) - offset
                 printed_end = max(printed_start, max_printed)
-
+            
             if printed_end < printed_start:
                 printed_end = printed_start
-
+            
             phys_start = self.offset_calculator.printed_to_physical(printed_start, offset, total_pages)
             phys_end = self.offset_calculator.printed_to_physical(printed_end, offset, total_pages)
 
